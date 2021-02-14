@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constant;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -17,19 +19,43 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        public List<Car> GetAll()
+        public IResult Add(Car car)
         {
-            return _carDal.GetAll();
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarAdded);
         }
 
-        public List<Car> GetAllByBrandId(int id)
+        public IResult Delete(Car car)
         {
-            return _carDal.GetAll(c => c.BrandId == id);
+            _carDal.Delete(car);
+            return new SuccessResult(Messages.CarDeleted);
         }
 
-        public List<CarDetailDTO> GetCarDetails()
+        public IDataResult<Car> GetById(int carId)
         {
-            return _carDal.GetCarDetails();
+            return new SuccessDataResult<Car>(_carDal.Get(c => c.CarId == carId));
+        }
+
+        public IResult Update(Car car)
+        {
+            _carDal.Update(car);
+            return new SuccessResult(Messages.CarUpdated);
+        }
+
+        public IDataResult<List<Car>> GetAll()
+        {
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.CarListed);
+        }
+
+
+        public IDataResult<List<Car>> GetAllByBrandId(int id)
+        {
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(b=>b.BrandId==id), Messages.CarListed);
+        }
+
+        public IDataResult<List<CarDetailDTO>> GetCarDetails()
+        {
+            return new SuccessDataResult<List<CarDetailDTO>>(_carDal.GetCarDetails());
         }
     }
 }
