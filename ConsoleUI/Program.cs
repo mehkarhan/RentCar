@@ -10,21 +10,25 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            int i = 10;
-            while(i!=4)
+            //UserAddTest();
+            //UserTest();
+            //UserDeleteTest();
+            //UserUpdateTest();
+            int i = 1;
+            while (i != 7)
             {
                 Console.WriteLine("Welcome to Rent Car System");
-                Console.WriteLine(" 1-Car\n 2-Brand\n 3-Color\n 4-Exit\n ");
+                Console.WriteLine(" 1-Car\n 2-Brand\n 3-Color\n 4-User\n 5-Customer\n 6-RentCar\n  7-Exit\n ");
                 Console.Write("Seçiminiz: ");
                 i = int.Parse(Console.ReadLine());
 
-                if (i==1)
+                if (i == 1)
                 {
                     Console.WriteLine("Car Manage Page");
                     Console.WriteLine(" 1-Car Add\n 2-Car Update\n 3-Car Delete\n 4-Car List\n");
                     Console.Write("Seçiminiz: ");
-                    int carChoose = int.Parse(Console.ReadLine());
-                    switch (carChoose)
+                    int Choose = int.Parse(Console.ReadLine());
+                    switch (Choose)
                     {
                         case 1:
                             CarAddTest();
@@ -42,12 +46,12 @@ namespace ConsoleUI
                             break;
                     }
                 }
-                else if (i==2)
+                else if (i == 2)
                 {
                     Console.WriteLine("Brand Manage Page");
                     Console.WriteLine(" 1- Brand Add\n 2-Brand Update\n 3-Brand Delete\n 4-Brand List\n");
-                    int brandChoose = int.Parse(Console.ReadLine());
-                    switch (brandChoose)
+                    int Choose = int.Parse(Console.ReadLine());
+                    switch (Choose)
                     {
                         case 1:
                             BrandAddTest();
@@ -65,12 +69,12 @@ namespace ConsoleUI
                             break;
                     }
                 }
-                else if (i==3)
+                else if (i == 3)
                 {
                     Console.WriteLine("Color Manage Page");
                     Console.WriteLine(" 1- Color Add\n 2-Color Update\n 3-Color Delete\n 4-Color List\n");
-                    int colorChoose = int.Parse(Console.ReadLine());
-                    switch (colorChoose)
+                    int Choose = int.Parse(Console.ReadLine());
+                    switch (Choose)
                     {
                         case 1:
                             ColorAddTest();
@@ -88,6 +92,54 @@ namespace ConsoleUI
                             break;
                     }
                 }
+                else if (i==4)
+                {
+                    Console.WriteLine("User Manage Page");
+                    Console.WriteLine(" 1- User Add\n 2-User Update\n 3-User Delete\n 4-User List\n");
+                    int Choose = int.Parse(Console.ReadLine());
+                    switch (Choose)
+                    {
+                        case 1:
+                            UserAddTest();
+                            break;
+                        case 2:
+                            UserUpdateTest();
+                            break;
+                        case 3:
+                            UserDeleteTest();
+                            break;
+                        case 4:
+                            UserTest();
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+                else if (i == 5)
+                {
+                    Console.WriteLine("Customer Manage Page");
+                    Console.WriteLine(" 1- User Add\n 2-User Update\n 3-User Delete\n 4-User List\n");
+                    int Choose = int.Parse(Console.ReadLine());
+                    switch (Choose)
+                    {
+                        case 1:
+                            CustomerAddTest();
+                            break;
+                        case 2:
+                            CustomerUpdateTest();
+                            break;
+                        case 3:
+                            CustomerDeleteTest();
+                            break;
+                        case 4:
+                            CustomerTest();
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
             }
             //CarAddTest();
             //CarUpdateTest();
@@ -97,6 +149,7 @@ namespace ConsoleUI
             //ColorTest();
             //carDeleteTest();
             //CarDeleteTest();
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
         }
 
         private static void CarDeleteTest()
@@ -298,6 +351,191 @@ namespace ConsoleUI
             {
                 Console.WriteLine(result.Message);
             }
+        }
+        //**************************USER**************************
+        private static void UserTest()
+        {
+            UserManager userManager = new UserManager(new EfUserDal());
+            var users = userManager.GetAll().Data;
+            foreach (var user in users)
+            {
+                Console.WriteLine("User ID :"+ user.UserId);
+                Console.WriteLine("User Name :"+ user.FirstName);
+                Console.WriteLine("User Lastname:"+ user.LastName);
+                Console.Write("\n");
+
+            }
+
+        }
+        private static void UserAddTest()
+        {
+            UserManager userManager=new UserManager(new EfUserDal());
+            Console.Write("Ad giriniz:");
+            string userFirstName = Console.ReadLine();
+            Console.Write("Soyad giriniz:");
+            string userLastname = Console.ReadLine();
+            Console.Write("E-mail giriniz:");
+            string userEmail = Console.ReadLine();
+            Console.Write("Password giriniz:");
+            string userPass = Console.ReadLine();
+           
+            
+            var result = userManager.Add(
+                new User {FirstName =userFirstName,LastName=userLastname,Email=userEmail,Password=userPass});
+            if (result.Success)
+            {
+                Console.WriteLine(result.Message);
+            }
+            
+        }
+        
+        private static void UserUpdateTest()
+        {
+            UserManager userManager = new UserManager(new EfUserDal());
+            UserTest();
+            Console.Write("Güncellemek için Kullanıcı ID'si giriniz:");
+            int chooseId = int.Parse(Console.ReadLine());
+            var result = userManager.GetById(chooseId).Data;
+
+            Console.Write("FirstName:");
+            result.FirstName = Console.ReadLine();
+            Console.Write("LastName:");
+            result.LastName = Console.ReadLine();
+            Console.Write("E-Mail:");
+            result.Email = Console.ReadLine();
+            Console.Write("Password:");
+            result.Password = Console.ReadLine();
+            userManager.Update(result);
+        }
+        private static void UserDeleteTest()
+        {
+            UserManager userManager = new UserManager(new EfUserDal());
+            UserTest();
+            Console.Write("Silmek için Kullanıcı ID'si giriniz:");
+            int chooseId = int.Parse(Console.ReadLine());
+            var result = userManager.GetById(chooseId).Data;
+            userManager.Delete(result);
+        }
+
+        //*********************Customer ***************************
+        private static void CustomerTest()
+        {
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            var customers = customerManager.GetAll().Data;
+            foreach (var customer in customers)
+            {
+                Console.WriteLine("User ID :" + customer.CustomerId);
+                Console.WriteLine("User Name :" + customer.UserId);
+                Console.WriteLine("User Lastname:" + customer.CompanyName);
+                Console.Write("\n");
+
+            }
+
+        }
+        private static void CustomerAddTest()
+        {
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            UserTest();
+            
+            Console.Write("User Id giriniz:");
+            int customerUI =int.Parse( Console.ReadLine());
+            Console.Write("Company Name giriniz:");
+            string customerCN = Console.ReadLine();
+            var result = customerManager.Add(
+                new Customer { UserId=customerUI,CompanyName=customerCN });
+            if (result.Success)
+            {
+                Console.WriteLine(result.Message);
+            }
+
+        }
+
+        private static void CustomerUpdateTest()
+        {
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            CustomerTest();
+            Console.Write("Güncellemek için Customer ID'si giriniz:");
+            int chooseId = int.Parse(Console.ReadLine());
+            var result = customerManager.GetById(chooseId).Data;
+
+            Console.Write("User Id giriniz:");
+            result.CustomerId = int.Parse(Console.ReadLine());
+            Console.Write("Company Name giriniz:");
+            result.CompanyName = Console.ReadLine();
+            customerManager.Update(result);
+        }
+        private static void CustomerDeleteTest()
+        {
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            CustomerTest();
+            Console.Write("Silmek için Customer ID'si giriniz:");
+            int chooseId = int.Parse(Console.ReadLine());
+            var result = customerManager.GetById(chooseId).Data;
+            customerManager.Delete(result);
+        }
+
+
+        //******************RENTAL CRUD*********************
+
+        private static void RentalTest()
+        {
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            var customers = rentalManager.GetAll().Data;
+            foreach (var customer in customers)
+            {
+                Console.WriteLine("User ID :" + customer.Id);
+                Console.WriteLine("User Name :" + customer.CarId);
+                Console.WriteLine("User Lastname:" + customer.CustomerId);
+                Console.WriteLine("User Lastname:" + customer.RentDate);
+                Console.WriteLine("User Lastname:" + customer.ReturnDate);
+                Console.Write("\n");
+
+            }
+
+        }
+        private static void RentalAddTest()
+        {
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            CarTest();
+            
+            Console.Write("Car Id giriniz:");
+            int rentalCarId = int.Parse(Console.ReadLine());
+            CustomerTest();
+            Console.Write("Customer Id giriniz:");
+            int rentalCustomerId = int.Parse(Console.ReadLine());
+            Console.Write("Başlangıç tarihi giriniz(GG/AA/YYYY):");
+            DateTime rentalRentDate = DateTime.Parse(Console.ReadLine());
+            var result = rentalManager.Add(
+                new Rental { CarId=rentalCarId,CustomerId=rentalCustomerId,RentDate=rentalRentDate });
+            if (result.Success)
+            {
+                Console.WriteLine(result.Message);
+            }
+
+        }
+
+        private static void RentalUpdateTest()
+        {
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            
+            Console.Write("Güncellemek için Rental ID'si giriniz:");
+            int chooseId = int.Parse(Console.ReadLine());
+            var result = rentalManager.GetById(chooseId).Data;
+
+            //Console.Write("User Id giriniz:");
+            //result.RentalId = int.Parse(Console.ReadLine());
+            //Console.Write("Company Name giriniz:");
+            //result.= Console.ReadLine();
+            //rentalManager.Update(result);
+        }
+        private static void RentalDeleteTest()
+        {
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            RentalTest();
+            Console.Write("Silmek için Rental ID'si giriniz:");
+            int chooseId = int.Parse(Console.ReadLine());
+            var result = rentalManager.GetById(chooseId).Data;
+            rentalManager.Delete(result);
         }
     }
 }
